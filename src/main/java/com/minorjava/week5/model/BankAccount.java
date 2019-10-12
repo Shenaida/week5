@@ -16,7 +16,7 @@ public class BankAccount {
     @Column(name="IBANNUMBER")
     private String IBANNumber;
 
-    @Min(8)
+    @Min(message = "must be a minimum of 8 numbers",value = 8)
     @Column(name="ACCOUNTNUMBER")
     private Long accountNumber;
 
