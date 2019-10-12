@@ -1,5 +1,7 @@
 package com.minorjava.week5.controller;
 
+import com.minorjava.week5.dto.BankAccountDto;
+import com.minorjava.week5.mapper.Mapper;
 import com.minorjava.week5.model.BankAccount;
 import com.minorjava.week5.service.BankAccountService;
 import com.minorjava.week5.util.FieldErrorMessage;
@@ -22,9 +24,11 @@ public class BankAccountController {
 
     @Autowired
     private final BankAccountService bankAccountService;
+    private final Mapper mapper;
 
-    public BankAccountController(BankAccountService bankAccountService) {
+    public BankAccountController(BankAccountService bankAccountService, Mapper mapper) {
         this.bankAccountService = bankAccountService;
+        this.mapper = mapper;
     }
     @PostMapping()
     public ResponseEntity create(@Valid @RequestBody BankAccount account) throws ValidationException {
@@ -42,8 +46,12 @@ public class BankAccountController {
     }
 
     @GetMapping()
-    public Iterable<BankAccount> read() {
-        return bankAccountService.findAll();
+    public ResponseEntity<BankAccountDto> read() {
+        if (!bankAccountService.findAll().isEmpty()) {
+            return new ResponseEntity(mapper.toBankAccountDto(bankAccountService.findAll()), HttpStatus.OK);
+        }
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping()
@@ -64,8 +72,13 @@ public class BankAccountController {
         }
     }
     @GetMapping("/{id}")
-    public Optional<BankAccount> findById(@PathVariable Long id){
-        return bankAccountService.findById(id);
+    public BankAccountDto findById(@PathVariable Long id)throws ValidationException{
+        Optional<BankAccount> optionalBankAccount= bankAccountService.findById(id);
+        if(optionalBankAccount.isPresent()){
+            return mapper.toBankAccountDto(optionalBankAccount.get());
+        }
+
+        throw new ValidationException("Bankaccount not found");
     }
 
 

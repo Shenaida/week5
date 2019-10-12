@@ -1,5 +1,6 @@
 package com.minorjava.week5;
 
+import com.minorjava.week5.model.AccountStatus;
 import com.minorjava.week5.model.BankAccount;
 import com.minorjava.week5.service.BankAccountService;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class Week5Application {
 	@Bean
 	public CommandLineRunner demo(BankAccountService service){
 		return args -> {
-			service.save(new BankAccount(1L,"INGB1", 12345678L, 100, BankAccount.AccountStatus.valueOf("ACTIVE") ));
+			service.save(new BankAccount(1L,"INGB1", 12345678L, 100, AccountStatus.valueOf("ACTIVE") ));
 			for(BankAccount account : service.findAll()){
 				log.info(account.toString());
 			}
